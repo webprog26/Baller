@@ -67,4 +67,10 @@ public abstract class MovableGameObject extends GameObject {
     public abstract void update(long fps);
 
     protected abstract void move(long fps);
+
+    public void reset(){
+        setxVelocity(0);
+        setyVelocity(0);
+        setMoves(false);
+    }
 }

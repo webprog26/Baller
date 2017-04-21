@@ -20,7 +20,11 @@ public class TouchController {
         Platform platform = gameManager.getPlatform();
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK){
             case MotionEvent.ACTION_DOWN:
-                gameManager.startBall();
+
+                if(!gameManager.isPlaying()){
+                    gameManager.startBall();
+                }
+
                 if(isLeftTouch(motionEvent, platform.getLeft())){
                         platform.setMoves(true);
                         platform.setFacing(MovableGameObject.LEFT);

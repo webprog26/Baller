@@ -103,4 +103,14 @@ public class Platform extends MovableGameObject {
         setxVelocity(0);
         setMoves(false);
     }
+
+    @Override
+    public void reset() {
+        super.reset();
+        setLeft((getGameManager().getScreenWidth() / 2) - (getWidth() / 2));
+        setTop(getGameManager().getScreenHeight() - getHeight());
+        setRight(getLeft() + getWidth());
+        setBottom(getTop() + getHeight());
+        setHitBox();
+    }
 }

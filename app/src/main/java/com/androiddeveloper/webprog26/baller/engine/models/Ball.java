@@ -126,4 +126,14 @@ public class Ball extends MovableGameObject {
             setFacing(TOP);
         }
     }
+
+    @Override
+    public void reset() {
+        super.reset();
+        setLeft(getGameManager().getScreenWidth() / 2);
+        setTop(getGameManager().getScreenHeight() - getHeight());
+        setRight(getLeft() + getWidth());
+        setBottom(getTop() + getHeight());
+        setHitBox();
+    }
 }
