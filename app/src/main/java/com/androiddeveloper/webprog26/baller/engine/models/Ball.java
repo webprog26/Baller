@@ -18,6 +18,8 @@ public class Ball extends MovableGameObject {
     private static final int BALL_X_VELOCITY = 200;
     private static final int BALL_Y_VELOCITY = 200;
 
+    private float facingAngle;
+
     public Ball(GameManager gameManager) {
         //Platform can only move on X-axis
         super(gameManager);
@@ -57,29 +59,33 @@ public class Ball extends MovableGameObject {
 
     @Override
     public void update(long fps) {
-        switch (getFacing()){
-            case TOP:
+        switch (getObjectFacing().getVerticalFacing()){
+            case FACING_TOP:
                 if(getTop() <= 0){
-                    setFacing(BOTTOM);
+                    getObjectFacing().setVerticalFacing(FACING_BOTTOM);
                 }
-                setyVelocity(-BALL_Y_VELOCITY);
+                setyVelocity((float)-(getSpeed() * Math.sin(Math.toRadians(getFacingAngle()))));
                 break;
-            case BOTTOM:
+            case FACING_BOTTOM:
                 if(getBottom() >= getGameManager().getScreenHeight()){
-                    setFacing(TOP);
+                    getObjectFacing().setVerticalFacing(FACING_TOP);
                 }
-                setyVelocity(BALL_Y_VELOCITY);
+                setyVelocity((float)(getSpeed() * Math.sin(Math.toRadians(getFacingAngle()))));
                 break;
         }
 
         if(isMoves()){
             if(getxVelocity() > 0 && getRight() >= getGameManager().getScreenWidth()){
-                setxVelocity(-BALL_X_VELOCITY);
+
+                setxVelocity((float)-(getSpeed() * Math.cos(Math.toRadians(getFacingAngle()))));
             }
 
             if(getxVelocity() < 0 && getLeft() <= 0){
-                setxVelocity(BALL_X_VELOCITY);
+                setxVelocity((float)(getSpeed() * Math.cos(Math.toRadians(getFacingAngle()))));
             }
+
+
+
             move(fps);
             setHitBox();
         }
@@ -123,7 +129,7 @@ public class Ball extends MovableGameObject {
             setMoves(true);
             setxVelocity(BALL_X_VELOCITY);
             setyVelocity(BALL_Y_VELOCITY);
-            setFacing(TOP);
+            getObjectFacing().setVerticalFacing(FACING_TOP);
         }
     }
 
@@ -135,5 +141,13 @@ public class Ball extends MovableGameObject {
         setRight(getLeft() + getWidth());
         setBottom(getTop() + getHeight());
         setHitBox();
+    }
+
+    public float getFacingAngle() {
+        return facingAngle;
+    }
+
+    public void setFacingAngle(float facingAngle) {
+        this.facingAngle = facingAngle;
     }
 }

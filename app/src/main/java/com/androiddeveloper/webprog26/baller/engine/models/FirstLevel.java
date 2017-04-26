@@ -8,15 +8,13 @@ import java.util.ArrayList;
 
 public class FirstLevel extends Level {
 
-    public static char BRICK = 'b';
-
     public FirstLevel() {
         levelData = new ArrayList<>();
         levelData.add("bbbbbbbbbb");
-        levelData.add("bbbbbbbbbb");
-        levelData.add("bbbbbbbbbb");
-        levelData.add("bbbbbbbbbb");
-        levelData.add("bbbbbbbbbb");
-        levelData.add("bbbbbbbbbb");
+//        levelData.add("bbbbbbbbbb");
+//        levelData.add("bbbbbbbbbb");
+//        levelData.add("bbbbbbbbbb");
+//        levelData.add("bbbbbbbbbb");
+//        levelData.add("bbbbbbbbbb");
     }
 }

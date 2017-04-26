@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.widget.Toast;
 
 import com.androiddeveloper.webprog26.baller.engine.manager.GameManager;
@@ -16,14 +17,16 @@ public abstract class UnmovableGameObject extends GameObject {
 
     private Bitmap bitmap;
     private char type;
+    protected Paint paint;
 
     public UnmovableGameObject(GameManager gameManager) {
         super(gameManager);
+        paint = new Paint();
         setHitBox();
     }
 
-    public void prepareBitmap(Context context, String bitmapName, float width, float height){
-
+    public void prepareBitmap(String bitmapName, float width, float height){
+        Context context = getGameManager().getContext();
         // Make a resource id from a String that is the same name as the .png
         int resID = context.getResources().getIdentifier(bitmapName,
                 "drawable", context.getPackageName());
@@ -53,5 +56,9 @@ public abstract class UnmovableGameObject extends GameObject {
 
     public void setType(char type) {
         this.type = type;
+    }
+
+    public Paint getPaint() {
+        return paint;
     }
 }

@@ -1,6 +1,5 @@
 package com.androiddeveloper.webprog26.baller.engine.controller;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.androiddeveloper.webprog26.baller.engine.manager.GameManager;
@@ -22,15 +21,18 @@ public class TouchController {
             case MotionEvent.ACTION_DOWN:
 
                 if(!gameManager.isPlaying()){
+                    if(gameManager.isGameOver()){
+                        gameManager.resetUI();
+                    }
                     gameManager.startBall();
                 }
 
                 if(isLeftTouch(motionEvent, platform.getLeft())){
                         platform.setMoves(true);
-                        platform.setFacing(MovableGameObject.LEFT);
+                        platform.getObjectFacing().setHorizontalFacing(MovableGameObject.FACING_LEFT);
                 } else if(isRightTouch(motionEvent, platform.getRight())){
                         platform.setMoves(true);
-                        platform.setFacing(MovableGameObject.RIGHT);
+                    platform.getObjectFacing().setHorizontalFacing(MovableGameObject.FACING_RIGHT);
 
                 } else {
                     platform.setxVelocity(0);

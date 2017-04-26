@@ -10,9 +10,11 @@ public class Level {
 
     ArrayList<String> levelData;
 
-    private static final String BITMAP_NAME = "brick";
-
     public ArrayList<String> getLevelData() {
         return levelData;
+    }
+
+    public void resetLevel(){
+
     }
 }

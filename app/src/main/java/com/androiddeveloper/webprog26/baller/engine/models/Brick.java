@@ -3,6 +3,7 @@ package com.androiddeveloper.webprog26.baller.engine.models;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import com.androiddeveloper.webprog26.baller.engine.manager.GameManager;
 
@@ -24,11 +25,6 @@ public class Brick extends UnmovableGameObject {
 
     @Override
     public void draw(Canvas canvas) {
-
-    }
-
-    @Override
-    public Bitmap getBitmap() {
-        return super.getBitmap();
+        canvas.drawBitmap(getBitmap(), getLeft(), getTop(),getPaint());
     }
 }

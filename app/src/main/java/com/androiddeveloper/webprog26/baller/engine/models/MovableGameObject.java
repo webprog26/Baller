@@ -1,5 +1,6 @@
 package com.androiddeveloper.webprog26.baller.engine.models;
 
+import com.androiddeveloper.webprog26.baller.engine.ObjectFacing;
 import com.androiddeveloper.webprog26.baller.engine.manager.GameManager;
 
 /**
@@ -8,19 +9,23 @@ import com.androiddeveloper.webprog26.baller.engine.manager.GameManager;
 
 public abstract class MovableGameObject extends GameObject {
 
-    public MovableGameObject(GameManager gameManager) {
-        super(gameManager);
-    }
-
-    public static final int LEFT = 1;
-    public static final int RIGHT = -1;
-    public static final int TOP = 2;
-    public static final int BOTTOM = -2;
+    public static final int FACING_LEFT = 1;
+    public static final int FACING_RIGHT = -1;
+    public static final int FACING_TOP = 2;
+    public static final int FACING_BOTTOM = -2;
 
     private float xVelocity;
     private float yVelocity;
-    private int facing;
     private boolean moves = false;
+
+    protected float speed;
+    protected ObjectFacing objectFacing;
+
+    public MovableGameObject(GameManager gameManager) {
+        super(gameManager);
+        objectFacing = new ObjectFacing();
+    }
+
 
     public float getxVelocity() {
         return xVelocity;
@@ -40,14 +45,6 @@ public abstract class MovableGameObject extends GameObject {
         if(couldMoveVertically() && isMoves()){
             this.yVelocity = yVelocity;
         }
-    }
-
-    public int getFacing() {
-        return facing;
-    }
-
-    public void setFacing(int facing) {
-        this.facing = facing;
     }
 
     public boolean isMoves() {
@@ -72,5 +69,17 @@ public abstract class MovableGameObject extends GameObject {
         setxVelocity(0);
         setyVelocity(0);
         setMoves(false);
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public ObjectFacing getObjectFacing() {
+        return objectFacing;
     }
 }

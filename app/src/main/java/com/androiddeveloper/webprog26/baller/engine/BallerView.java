@@ -4,18 +4,18 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.androiddeveloper.webprog26.baller.R;
 import com.androiddeveloper.webprog26.baller.engine.controller.TouchController;
 import com.androiddeveloper.webprog26.baller.engine.manager.GameManager;
-import com.androiddeveloper.webprog26.baller.engine.models.Ball;
+import com.androiddeveloper.webprog26.baller.engine.models.Brick;
 import com.androiddeveloper.webprog26.baller.engine.models.FirstLevel;
 import com.androiddeveloper.webprog26.baller.engine.models.Level;
-import com.androiddeveloper.webprog26.baller.engine.models.MovableGameObject;
-import com.androiddeveloper.webprog26.baller.engine.models.Platform;
+import com.androiddeveloper.webprog26.baller.engine.models.Life;
+import com.androiddeveloper.webprog26.baller.engine.models.SecondLevel;
 import com.androiddeveloper.webprog26.baller.engine.models.UnmovableGameObject;
 
 import java.util.ArrayList;
@@ -53,6 +53,7 @@ public class BallerView extends SurfaceView implements Runnable{
 
         ArrayList<Level> levels = new ArrayList<>();
         levels.add(new FirstLevel());
+        levels.add(new SecondLevel());
 
         this.mGameManager = new GameManager(context, screenWidth, screenHeight, levels);
         this.mTouchController = new TouchController();
@@ -64,49 +65,8 @@ public class BallerView extends SurfaceView implements Runnable{
 
     private void update(){
         if(mGameManager.isPlaying()){
-            Platform platform = mGameManager.getPlatform();
-            platform.update(fps);
-            platform.getObjectLocation().updateLocation(
-                    platform.getLeft(),
-                    platform.getRight());
-
-            Ball ball = mGameManager.getBall();
-            ball.update(fps);
-            ball.getObjectLocation().updateLocation(
-                    ball.getLeft(),
-                    ball.getTop(),
-                    ball.getRight(),
-                    ball.getBottom());
-
-            if(ball.getFacing() == MovableGameObject.BOTTOM
-                    && ball.getHitBox().intersects(platform.getHitBox())){
-                Log.i(BALLER_VIEW_TAG, "ball touched the platform");
-                ball.setxVelocity(-ball.getxVelocity());
-                ball.setFacing(MovableGameObject.TOP);
-            }
-
-            if(ball.getFacing() == MovableGameObject.BOTTOM
-                    && !ball.getHitBox().intersects(platform.getHitBox())
-                    && ball.getBottom() >= getScreenHeight()){
-                mGameManager.reset();
-            }
-
-            for(int i = 0; i < mGameManager.getUnmovableGameObjects().size(); i++){
-                UnmovableGameObject unmovableGameObject = mGameManager.getUnmovableGameObjects().get(i);
-                if(ball.getHitBox().intersects(unmovableGameObject.getHitBox())){
-                    Log.i(BALLER_VIEW_TAG, "ball touched object with index " + i);
-                    if(unmovableGameObject.isVisible()){
-                        if(ball.getFacing() == MovableGameObject.TOP){
-                            ball.setFacing(MovableGameObject.BOTTOM);
-                        } else {
-                            ball.setFacing(MovableGameObject.TOP);
-                        }
-                        ball.setyVelocity(-ball.getyVelocity());
-                        mGameManager.setUnmovableGameObjectInvisibility(i);
-                    }
-
-                }
-            }
+            mGameManager.updateMovableGameObjects(fps);
+            mGameManager.checkBallCollisions();
         }
     }
 
@@ -119,31 +79,55 @@ public class BallerView extends SurfaceView implements Runnable{
             mGameManager.getPlatform().draw(mCanvas);
             mGameManager.getBall().draw(mCanvas);
 
+            float lifeStartX = 0;
 
-            float singleUnmovableObjectWidth;
-            float singleUnmovableObjectHeight;
-            float startX = 0;
-            float startY = 10;
+            for(int i = 0; i < mGameManager.getLivesCountManager().getLives().size(); i++){
+                Life life = mGameManager.getLivesCountManager().getLives().get(i);
+                if(life.isVisible()){
+                    life.setLeft(lifeStartX);
+                    life.draw(mCanvas);
+                    lifeStartX += life.getWidth() + 6;
+                }
+            }
 
-                for(int i = 0; i <  mGameManager.getUnmovableGameObjects().size(); i++){
-                        UnmovableGameObject unmovableGameObject = mGameManager.getUnmovableGameObjects().get(i);
-                        unmovableGameObject.setLeft(startX);
-                        unmovableGameObject.setTop(startY);
-                        unmovableGameObject.setRight(startX + unmovableGameObject.getWidth());
-                        unmovableGameObject.setBottom(startY + unmovableGameObject.getHeight());
-                        unmovableGameObject.setHitBox();
+            mGameManager.getPointsManager().draw(mCanvas, mGameManager.getContext().getString(R.string.points));
 
-                        singleUnmovableObjectWidth = (int) unmovableGameObject.getWidth();
-                        singleUnmovableObjectHeight = (int) unmovableGameObject.getHeight();
-                        if(unmovableGameObject.isVisible()){
-                            mCanvas.drawBitmap(unmovableGameObject.getBitmap(), startX, startY, mPaint);
-                        }
-                        startX += singleUnmovableObjectWidth;
-                        if(startX == getScreenWidth()){
-                            startX = 0;
-                            startY += singleUnmovableObjectHeight + 1;
+            float brickStartX = 0;
+            float brickStartY = getScreenHeight() / 20;
+
+                for(int i = 0; i <  mGameManager.getBricksObjects().size(); i++){
+                        UnmovableGameObject collidedUnmovableGameObject = mGameManager.getBricksObjects().get(i);
+                        switch (collidedUnmovableGameObject.getType()){
+                            case Brick.BRICK_TYPE:
+                                Brick brick = (Brick) collidedUnmovableGameObject;
+                                brick.setLeft(brickStartX);
+                                brick.setTop(brickStartY);
+                                brick.setRight(brickStartX + brick.getWidth());
+                                brick.setBottom(brickStartY + brick.getHeight());
+                                brick.setHitBox();
+
+                                float singleUnmovableObjectWidth = (int) brick.getWidth();
+                                float singleUnmovableObjectHeight = (int) brick.getHeight();
+                                if(brick.isVisible()){
+//                            mCanvas.drawBitmap(brick.getBitmap(), brickStartX, brickStartY, mPaint);
+                                    brick.draw(mCanvas);
+                                }
+                                brickStartX += singleUnmovableObjectWidth;
+                                if(brickStartX == getScreenWidth()){
+                                    brickStartX = 0;
+                                    brickStartY += singleUnmovableObjectHeight + 1;
+                                }
+                                break;
                         }
                 }
+
+            if(!mGameManager.isPlaying()){
+                if(mGameManager.isGameOver()){
+                    mGameManager.showGameOverMessage(mCanvas);
+                } else {
+                    mGameManager.showGreetingMessage(mCanvas);
+                }
+            }
 
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }

@@ -51,8 +51,8 @@ public class Platform extends MovableGameObject {
 
     @Override
     public void update(long fps) {
-            switch (getFacing()){
-                case LEFT:
+            switch (getObjectFacing().getHorizontalFacing()){
+                case FACING_LEFT:
                     if((int) getLeft() <= 0){
                         stopMoving();
                         break;
@@ -60,7 +60,7 @@ public class Platform extends MovableGameObject {
                     setxVelocity(-PLATFORM_X_VELOCITY);
                     Log.i(PLATFORM_TAG, "left " + getLeft());
                     break;
-                case RIGHT:
+                case FACING_RIGHT:
                     if((int) getRight() >= getGameManager().getScreenWidth()){
                         stopMoving();
                         break;
