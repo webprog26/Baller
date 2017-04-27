@@ -90,7 +90,7 @@ public class BallerView extends SurfaceView implements Runnable{
                 }
             }
 
-            mGameManager.getPointsManager().draw(mCanvas, mGameManager.getContext().getString(R.string.points));
+            mGameManager.getPointsManager().draw(mCanvas);
 
             float brickStartX = 0;
             float brickStartY = getScreenHeight() / 20;
@@ -109,7 +109,6 @@ public class BallerView extends SurfaceView implements Runnable{
                                 float singleUnmovableObjectWidth = (int) brick.getWidth();
                                 float singleUnmovableObjectHeight = (int) brick.getHeight();
                                 if(brick.isVisible()){
-//                            mCanvas.drawBitmap(brick.getBitmap(), brickStartX, brickStartY, mPaint);
                                     brick.draw(mCanvas);
                                 }
                                 brickStartX += singleUnmovableObjectWidth;

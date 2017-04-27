@@ -14,6 +14,8 @@ public abstract class MovableGameObject extends GameObject {
     public static final int FACING_TOP = 2;
     public static final int FACING_BOTTOM = -2;
 
+    public static final int START_SPEED = 200;
+
     private float xVelocity;
     private float yVelocity;
     private boolean moves = false;
@@ -24,6 +26,7 @@ public abstract class MovableGameObject extends GameObject {
     public MovableGameObject(GameManager gameManager) {
         super(gameManager);
         objectFacing = new ObjectFacing();
+        setSpeed(START_SPEED);
     }
 
 

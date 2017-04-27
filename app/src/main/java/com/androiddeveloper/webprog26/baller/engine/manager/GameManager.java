@@ -45,7 +45,7 @@ public class GameManager {
         this.mLevels = levels;
         this.mContext = context;
 
-        this.textMessageManager = new TextMessageManager(screenWidth, screenHeight);
+        this.textMessageManager = new TextMessageManager(this);
         this.pointsManager = new PointsManager(this);
 
         initGame();
@@ -61,9 +61,9 @@ public class GameManager {
         mBall.setSpeed(BALL_START_SPEED);
     }
 
-    public void startBall(){
+    public void startBall(int increaseSpeedTo){
         setPlaying(true);
-        mBall.start();
+        mBall.start(increaseSpeedTo);
     }
 
     private boolean isPlaying;
@@ -81,6 +81,7 @@ public class GameManager {
         if(isPlaying()){
             if(isGameOver){
                 setGameOver(false);
+                textMessageManager.setGameOver(isGameOver());
             }
         }
         isPlaying = playing;
@@ -131,10 +132,6 @@ public class GameManager {
         return index;
     }
 
-    public void setCurrentLevel(Level currentLevel) {
-        this.currentLevel = currentLevel;
-    }
-
     private void loadBricksObjects(){
         int bricksCount = 0;
         if(getCurrentLevel() != null){
@@ -178,11 +175,8 @@ public class GameManager {
 
         if(livesCount == 0){
             setGameOver(true);
+            textMessageManager.setGameOver(isGameOver());
         }
-    }
-
-    public void setBallSpeed(float ballSpeed){
-        mBall.setSpeed(ballSpeed);
     }
 
     public Context getContext() {
@@ -334,20 +328,24 @@ public class GameManager {
         }
     }
 
-    private String getGreetingString(){
+    public String getGreetingString(){
         return getContext().getString(R.string.touch_to_play, (getLevelIndex() + 1));
     }
 
-    private String getGameOverString(){
+    public String getGameOverString(){
         return getContext().getString(R.string.game_over);
     }
 
+    public String getPointsString(){
+        return getContext().getString(R.string.points, pointsManager.getCurrentUserPoints());
+    }
+
     public void showGreetingMessage(Canvas canvas){
-        textMessageManager.printUserMessage(getGreetingString(), canvas);
+        textMessageManager.draw(canvas);
     }
 
     public void showGameOverMessage(Canvas canvas){
-        textMessageManager.printUserMessage(getGameOverString() + "\n" + getGreetingString(), canvas);
+        textMessageManager.draw(canvas);
     }
 
     public LivesCountManager getLivesCountManager() {
@@ -357,6 +355,7 @@ public class GameManager {
     public void resetUI(){
         livesCountManager.reset();
         resetBricks();
+        pointsManager.setCurrentUserPoints(0);
     }
 
     private void resetBricks(){
@@ -377,9 +376,5 @@ public class GameManager {
 
     public PointsManager getPointsManager() {
         return pointsManager;
-    }
-
-    public void setPointsManager(PointsManager pointsManager) {
-        this.pointsManager = pointsManager;
     }
 }

@@ -24,7 +24,7 @@ public class TouchController {
                     if(gameManager.isGameOver()){
                         gameManager.resetUI();
                     }
-                    gameManager.startBall();
+                    gameManager.startBall(gameManager.getLevelIndex() + 1);
                 }
 
                 if(isLeftTouch(motionEvent, platform.getLeft())){

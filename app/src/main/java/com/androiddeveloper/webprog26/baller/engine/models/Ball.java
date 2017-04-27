@@ -15,7 +15,7 @@ public class Ball extends MovableGameObject {
 
     private float mRadius;
 
-    private static final int BALL_X_VELOCITY = 200;
+    public static final int BALL_X_VELOCITY = 200;
     private static final int BALL_Y_VELOCITY = 200;
 
     private float facingAngle;
@@ -124,8 +124,9 @@ public class Ball extends MovableGameObject {
         this.mRadius = mRadius;
     }
 
-    public void start(){
+    public void start(int increaseSpeedTo){
         if(!isMoves()){
+            setSpeed(MovableGameObject.START_SPEED * increaseSpeedTo);
             setMoves(true);
             setxVelocity(BALL_X_VELOCITY);
             setyVelocity(BALL_Y_VELOCITY);
